@@ -119,10 +119,10 @@ BEGIN
     LOOP
         sql_cmd := sql_cmd || ', RPAD(DECODE(k' || TO_CHAR(i) || '.imie, null, '' '', k' || TO_CHAR(i) || '.imie),10, '' '') szef' || TO_CHAR(i) ;
     END LOOP;
-    sql_cmd := sql_cmd || ' FROM Kocury k JOIN Kocury k1 ON k.szef=k1.pseudo ';
+    sql_cmd := sql_cmd || ' FROM OracleKocury k JOIN OracleKocury k1 ON k.szef=k1.pseudo ';
     FOR i in 2..max_lvl
     LOOP
-        sql_cmd := sql_cmd || 'LEFT JOIN Kocury k' || TO_CHAR(i) || ' ON k' || TO_CHAR(i-1) || '.szef=k' || TO_CHAR(i) || '.pseudo ';
+        sql_cmd := sql_cmd || 'LEFT JOIN OracleKocury k' || TO_CHAR(i) || ' ON k' || TO_CHAR(i-1) || '.szef=k' || TO_CHAR(i) || '.pseudo ';
     END LOOP;
     sql_cmd := sql_cmd || 'WHERE k.funkcja IN (''KOT'', ''MILUSIA'');';
 
@@ -385,7 +385,7 @@ BEGIN
         sql_cmd := sql_cmd || ',to_char(LPAD(SUM(DECODE(funkcja, ''' || f.funkcja || ''',(NVL(przydzial_myszy,0)+NVL(myszy_extra,0)),0)), 9,'' '')) '|| f.funkcja;
     END LOOP;
     sql_cmd := sql_cmd || ',to_char(SUM((NVL(przydzial_myszy,0)+NVL(myszy_extra,0)))) "SUMA"
-FROM Kocury k JOIN Bandy b
+FROM OracleKocury k JOIN Bandy b
 ON k.nr_bandy = b.nr_bandy
 GROUP BY b.nazwa, k.plec
 ORDER BY b.nazwa
@@ -397,7 +397,7 @@ UNION ALL
         sql_cmd := sql_cmd || ',to_char(LPAD(SUM(DECODE(funkcja, ''' || f.funkcja || ''',(NVL(przydzial_myszy,0)+NVL(myszy_extra,0)),0)), 9,'' '')) '|| f.funkcja;
     END LOOP;
      sql_cmd := sql_cmd || ', to_char(SUM((NVL(przydzial_myszy,0)+NVL(myszy_extra,0)))) "SUMA"
-FROM Kocury)';
+FROM OracleKocury)';
     header:= 'NAZWA BANDY      PLEC  ILE ';
     FOR f IN funkcje
     LOOP
